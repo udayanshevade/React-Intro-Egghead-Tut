@@ -6,88 +6,48 @@ class App extends React.Component {
   constructor() {
     // access to context
     super();
-    // define component properties
     this.state = {
-      level: 0
+      increasing: false
     };
     this.update = this.update.bind(this);
   }
 
   // increment the level
   update() {
-    this.setState({ level: this.state.level + 1 });
+    ReactDOM.render(
+      <App level={this.props.level + 1}/>,
+      document.getElementById('app')
+    );
   }
 
-  // Mounting of the app component
-  // these are only relative to the local component
-  componentWillMount() {
-    console.log('App will unmount shortly.');
-  }
-  componentDidMount() {
-    console.log('App has successfully unmounted.');
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      increasing: nextProps.level > this.props.level
+    });
+    console.log(this.state.increasing);
   }
 
-  // Unmounting the app component
-  // these are only relative to the local component
-  componentWillUnmount() {
-    console.log('App will unmount shortly.');
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.level % 5 === 0;
   }
-  componentHasUnmounted() {
-    console.log('App has successfully unmounted.');
+
+  componentDidUpdate(prevProps, nextProps) {
+    console.log('prevProps', prevProps);
   }
 
   // default render function
   render() {
     return (
-      <button onClick={this.update}>{ this.state.level }</button>
+      <button onClick={this.update}>{ this.props.level }</button>
     );
   }
 };
 
-class Wrapper extends React.Component {
-  constructor() {
-    super();
-    this.mount = this.mount.bind(this);
-    this.unmount = this.unmount.bind(this);
-  }
-
-  mount() {
-    console.log('Mounting the level.');
-    this.levelContainer = document.getElementById('level-container');
-    ReactDOM.render(<App/>, this.levelContainer);
-  }
-
-  componentWillMount() {
-    console.log('Wrapper will mount shortly.');
-  }
-  componentDidMount() {
-    console.log('Wrapper has successfully mounted.');
-  }
-
-  unmount() {
-    console.log('Unmounting the level.');
-    ReactDOM.unmountComponentAtNode(this.levelContainer);
-  }
-  componentWillUnmount() {
-    console.log('Wrapper will unmount shortly.');
-  }
-  componentHasUnmounted() {
-    console.log('Wrapper has successfully unmounted.');
-  }
-
-  render() {
-    return (
-      <div>
-        <button onClick={this.mount}>Mount</button>
-        <button onClick={this.unmount}>Unmount</button>
-        <div id="level-container"></div>
-      </div>
-    );
-  }
-
-}
+App.defaultProps = {
+  level: 0
+};
 
 ReactDOM.render(
-  <Wrapper/>,
+  <App/>,
   document.getElementById('app')
 );
