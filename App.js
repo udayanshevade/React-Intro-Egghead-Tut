@@ -1,50 +1,52 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-class App extends React.Component {
-  // Constructor for the component class
+let Mixin = InnerComponent => class extends React.Component {
   constructor() {
     // access to context
     super();
     this.state = {
-      increasing: false
+      level: 0
     };
     this.update = this.update.bind(this);
   }
-
   // increment the level
   update() {
-    ReactDOM.render(
-      <App level={this.props.level + 1}/>,
-      document.getElementById('app')
+    this.setState({
+      level: this.state.level + 1
+    });
+  }
+  render() {
+    return (
+      <InnerComponent
+        update={this.update}
+        {...this.state}
+        {...this.props}/>
     );
   }
+}
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      increasing: nextProps.level > this.props.level
-    });
-    console.log(this.state.increasing);
-  }
+const Button = (props) => <button onClick={props.update}>{props.txt} - {props.level}</button>
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.level % 5 === 0;
-  }
+let ButtonMixed = Mixin(Button);
 
-  componentDidUpdate(prevProps, nextProps) {
-    console.log('prevProps', prevProps);
-  }
+const Label = (props) => <label onMouseMove={props.update}>{props.txt} - {props.level}</label>
+
+let LabelMixed = Mixin(Label);
+
+class App extends React.Component {
+  // Constructor for the component class
 
   // default render function
   render() {
     return (
-      <button onClick={this.update}>{ this.props.level }</button>
+      <div>
+        <ButtonMixed txt="Button"/>
+        <br/>
+        <LabelMixed txt="Label"/>
+      </div>
     );
   }
-};
-
-App.defaultProps = {
-  level: 0
 };
 
 ReactDOM.render(
