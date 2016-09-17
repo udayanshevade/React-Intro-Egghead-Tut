@@ -5,57 +5,93 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      red: 0,
-      green: 0,
-      blue: 0
+      red: 0
     };
     this.update = this.update.bind(this);
   }
-  update(e) {
+  update() {
     this.setState({
-      red: ReactDOM.findDOMNode(this.refs.red.refs.inp).value,
-      green: ReactDOM.findDOMNode(this.refs.green.refs.inp).value,
-      blue: ReactDOM.findDOMNode(this.refs.blue.refs.inp).value
+      red: ReactDOM.findDOMNode(this.refs.red.refs.inp).value
     });
   }
   render() {
     return (
       <main>
-
-        <Slider ref="red"
-          val={ this.state.red }
-          update={ this.update } />
-
-        <Slider ref="green"
-          val={ this.state.green }
-          update ={this.update } />
-
-        <Slider ref="blue"
-          val={ this.state.blue }
-           update= {this.update } />
-
+        <NumInput ref="red"
+          min={0}
+          max={255}
+          step={1}
+          label="Value"
+          val={+this.state.red}
+          update={this.update} />
       </main>
-    );
-  }
-};
-
-class Slider extends React.Component {
-  render() {
-    let val = this.props.val;
-    let update = this.props.update;
-    return (
-      <label>
-        <div>{ val }</div>
-        <input ref="inp" type="range"
-          value={ val }
-          min="0" max="255"
-          onChange={update} />
-      </label>
     );
   }
 }
 
+class NumInput extends React.Component {
+  constructor() {
+    super();
+    this.types = ['range', 'number'];
+    this.typeIndex = 0;
+    this.state = {
+      type: 'range'
+    };
+    this.toggle = this.toggle.bind(this);
+  }
+  toggle() {
+    this.props.update();
+    this.typeIndex = (this.typeIndex + 1) % 2;
+    this.setState({
+      type: this.types[this.typeIndex]
+    });
+  }
+  render() {
+    let label = this.props.label ? this.props.label + '-' : '';
+    let val = this.props.val;
+    let update = this.props.update;
+    return (
+      <div>
+        <label>
+          <div>{label} { val }</div>
+          <input
+            className="value-input"
+            ref="inp"
+            type={this.state.type}
+            defaultValue={val}
+            min={this.props.min}
+            max={this.props.max}
+            step={this.props.step}
+            onChange={update}/>
+        </label>
+        <label className="switch">
+          <input type="checkbox"
+            onChange={this.toggle}/>
+          <div className="slider round"></div>
+        </label>
+      </div>
+    );
+  }
+}
+
+NumInput.propTypes = {
+  min: React.PropTypes.number,
+  max: React.PropTypes.number,
+  val: React.PropTypes.number,
+  step: React.PropTypes.number,
+  label: React.PropTypes.string,
+  update: React.PropTypes.func.isRequired
+};
+
+NumInput.defaultProps = {
+  min: 0,
+  val: 0,
+  step: 1,
+  label: ''
+};
+
+
 ReactDOM.render(
-  <App cat={5}/>,
+  <App/>,
   document.getElementById('app')
 );
