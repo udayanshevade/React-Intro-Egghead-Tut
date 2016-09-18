@@ -5,90 +5,43 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      red: 0
+      data: [
+        {id:1, name: '001'},
+        {id:2, name: '002'},
+        {id:3, name: '003'},
+        {id:4, name: '004'},
+        {id:5, name: '005'},
+        {id:6, name: '006'},
+        {id:7, name: '007'},
+        {id:8, name: '008'},
+        {id:9, name: '009'},
+        {id:10, name: '010'},
+        {id:11, name: '011'},
+        {id:12, name: '012'},
+        {id:13, name: '013'},
+        {id:14, name: '014'},
+        {id:15, name: '015'},
+      ]
     };
-    this.update = this.update.bind(this);
-  }
-  update() {
-    this.setState({
-      red: ReactDOM.findDOMNode(this.refs.red.refs.inp).value
-    });
   }
   render() {
+    let rows = this.state.data.map( person => {
+      return <PersonRow key={person.id} data={person}/>
+    });
     return (
-      <main>
-        <NumInput ref="red"
-          min={0}
-          max={255}
-          step={1}
-          label="Value"
-          val={+this.state.red}
-          update={this.update} />
-      </main>
+      <table>
+        <tbody>{rows}</tbody>
+      </table>
     );
   }
 }
 
-class NumInput extends React.Component {
-  constructor() {
-    super();
-    this.types = ['range', 'number'];
-    this.typeIndex = 0;
-    this.state = {
-      type: 'range'
-    };
-    this.toggle = this.toggle.bind(this);
-  }
-  toggle() {
-    this.props.update();
-    this.typeIndex = (this.typeIndex + 1) % 2;
-    this.setState({
-      type: this.types[this.typeIndex]
-    });
-  }
-  render() {
-    let label = this.props.label ? this.props.label + '-' : '';
-    let val = this.props.val;
-    let update = this.props.update;
-    return (
-      <div>
-        <label>
-          <div>{label} { val }</div>
-          <input
-            className="value-input"
-            ref="inp"
-            type={this.state.type}
-            defaultValue={val}
-            min={this.props.min}
-            max={this.props.max}
-            step={this.props.step}
-            onChange={update}/>
-        </label>
-        <label className="switch">
-          <input type="checkbox"
-            onChange={this.toggle}/>
-          <div className="slider round"></div>
-        </label>
-      </div>
-    );
-  }
+const PersonRow = (props) => {
+  return <tr>
+    <td>{props.data.id}</td>
+    <td>{props.data.name}</td>
+  </tr>
 }
-
-NumInput.propTypes = {
-  min: React.PropTypes.number,
-  max: React.PropTypes.number,
-  val: React.PropTypes.number,
-  step: React.PropTypes.number,
-  label: React.PropTypes.string,
-  update: React.PropTypes.func.isRequired
-};
-
-NumInput.defaultProps = {
-  min: 0,
-  val: 0,
-  step: 1,
-  label: ''
-};
 
 
 ReactDOM.render(
