@@ -1,0 +1,32 @@
+body {
+  margin: 0;
+}
+
+.error-message {
+  height: 7.5vh;
+  overflow-y: auto;
+  background-color: pink;
+  color: red;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 92.5vh;
+}
+
+.container-split {
+  width: 50%;
+}
+
+.input {
+  font-size: 1.25em;
+}
+
+.output {
+  margin: 0;
+  padding: 1em;
+  background-color: #ddd;
+  color: #666;
+  font-size: 1.75em;
+}
